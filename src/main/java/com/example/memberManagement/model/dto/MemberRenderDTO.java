@@ -1,29 +1,15 @@
-package com.example.memberManagement.model.entity;
-
-import jakarta.persistence.*;
+package com.example.memberManagement.model.dto;
 
 import java.util.Date;
 
-@Entity
-@Table(name="members")
-public class Member{
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_no")
+public class MemberRenderDTO {
     private int memberNo;
-
     private String id;
-    private String password;
     private String name;
 
     private String mobilePhone;
 
     private String email;
-
-    private int status;
-
-    private int roleId;
 
     private Date joinDate;
 
@@ -41,14 +27,6 @@ public class Member{
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getName() {
@@ -73,22 +51,6 @@ public class Member{
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public int getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
-    }
-
-    public int getStatus() {
-        return status;
     }
 
     public Date getJoinDate() {
