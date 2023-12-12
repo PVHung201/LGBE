@@ -1,6 +1,8 @@
 package com.example.memberManagement.model.dto;
 
 public class MemberDTO {
+
+
     private int memberNo;
 
     private String id;
