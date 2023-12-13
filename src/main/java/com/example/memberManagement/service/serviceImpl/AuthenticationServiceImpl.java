@@ -33,7 +33,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenResponse authenticate(LoginForm loginForm) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginForm.getUsername(),
+                        loginForm.getId(),
                         loginForm.getPassword()
                 )
         );
