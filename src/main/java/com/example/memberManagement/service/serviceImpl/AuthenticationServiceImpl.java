@@ -6,6 +6,7 @@ import com.example.memberManagement.service.AuthenticationService;
 import com.example.memberManagement.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,10 +21,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
+    @Autowired
     private final JwtService jwtService;
 
     private final AuthenticationManager authenticationManager;
-
+    @Autowired
     private final UserDetailsService userDetailsService;
 
 

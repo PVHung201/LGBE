@@ -21,7 +21,7 @@ public class JwtServiceImpl implements JwtService {
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
 
-    @Value("${application.security.jwt.expiratioin}")
+    @Value("${application.security.jwt.expiration}")
     private Long jwtExpiration;
 
     @Value("${application.security.refresh-tokene.expiration}")
