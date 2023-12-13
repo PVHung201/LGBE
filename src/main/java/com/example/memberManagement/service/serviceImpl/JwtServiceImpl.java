@@ -11,8 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -47,11 +48,20 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String generateAccessToken(UserDetails userDetails) {
+        return generateAccessToken(new HashMap<>(), userDetails);
+    }
+
+    public String generateAccessToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        return buildToken(extraClaims, userDetails, jwtExpiration, "Access");
+    }
+
+    public String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, Long expiration,String type) {
         return Jwts.builder()
-                .setClaims(new HashMap<>())
+                .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
-                .claim("type", "Refresh")
-                .setIssuedAt(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+                .claim("type", type)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

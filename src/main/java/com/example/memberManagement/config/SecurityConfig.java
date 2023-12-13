@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -53,10 +52,11 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-//
+
 //        http
 //                .csrf(csrf->csrf.disable())
 //                .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                .and()
 //                .authorizeRequests()
 //                .antMatchers("/api/auth/**").permitAll()
@@ -86,9 +86,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry.requestMatchers(
 
-                        "/api/v1/member/**",
-                        "/api/v1/login",
-                        "/api/v1/member/list"
+//                        "/api/v1/member/**",
+                        "/api/v1/auth/**"
+//                        "/api/v1/member/list"
                 ).permitAll().anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
