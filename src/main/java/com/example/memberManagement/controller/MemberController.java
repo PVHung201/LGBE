@@ -1,5 +1,6 @@
 package com.example.memberManagement.controller;
 
+import com.example.memberManagement.model.dto.AuthenResponse;
 import com.example.memberManagement.model.dto.MemberDTO;
 import com.example.memberManagement.model.dto.MemberRenderDTO;
 import com.example.memberManagement.model.entity.Member;
@@ -19,7 +20,7 @@ public class MemberController {
 
     @CrossOrigin
     @PostMapping("/register")
-    public Member createMember(@RequestBody @Validated MemberDTO memberDTO){
+    public AuthenResponse createMember(@RequestBody @Validated MemberDTO memberDTO){
         Member member = memberService.createMember(memberDTO);
         return member;
     }
