@@ -13,7 +13,8 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.sql.Date;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -21,7 +22,7 @@ public class JwtServiceImpl implements JwtService {
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
 
-    @Value("${application.security.jwt.expiratioin}")
+    @Value("${application.security.jwt.expiration}")
     private Long jwtExpiration;
 
     @Value("${application.security.refresh-tokene.expiration}")
@@ -29,8 +30,20 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public Claims extractAllClaims(String token) {
-        return null;
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
     }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+
 
     @Override
     public String generateAccessToken(UserDetails userDetails) {
@@ -45,7 +58,8 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String extractUsername(String token) {
-        return null;
+        return extractClaim(token, Claims::getSubject);
+
     }
 
 
@@ -56,22 +70,26 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        return false;
+        final String username = extractUsername(token);
+        return Objects.equals(username, userDetails.getUsername()) && !isTokenExpired(token);
+
     }
 
     @Override
     public boolean isTokenExpired(String token) {
-        return false;
+
+        return extractExpiration(token).before(new java.util.Date());
     }
 
     @Override
     public Date extractExpiration(String token) {
-        return null;
+
+        return (Date) extractClaim(token, Claims::getExpiration);
     }
 
     @Override
     public String extractType(String token) {
-        return null;
+        return extractAllClaims(token).get("type", String.class);
     }
 
     @Override
