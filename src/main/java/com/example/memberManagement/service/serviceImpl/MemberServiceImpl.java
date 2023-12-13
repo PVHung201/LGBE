@@ -35,8 +35,6 @@ public class MemberServiceImpl implements MemberService {
 
         Date date = new Date();
 
-        var member = Member.Builder().memberNo(memberDTO.getMemberNo())
-                .member
 
 
 
