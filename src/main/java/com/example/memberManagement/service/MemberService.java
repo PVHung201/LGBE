@@ -12,7 +12,9 @@ public interface MemberService {
 
     Member createMember(MemberDTO memberDTO);
 
-    List<MemberRenderDTO> list();
+    List<MemberRenderDTO> list(int size, int startInx);
+
+    List<MemberRenderDTO> listMemberSearch(MemberRenderDTO searchForm, int size, int startInx);
 
 
 }

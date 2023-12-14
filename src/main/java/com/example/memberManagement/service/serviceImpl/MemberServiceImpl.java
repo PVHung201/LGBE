@@ -25,6 +25,8 @@ public class MemberServiceImpl implements MemberService {
     PasswordEncoder passwordEncoder;
 
 
+
+
     @Override
     public Member createMember(MemberDTO memberDTO){
         Member member = new Member();
@@ -48,10 +50,31 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<MemberRenderDTO> list() {
+    public List<MemberRenderDTO> list(int size, int startInx) {
         List<MemberRenderDTO> listMemberRender = new ArrayList<MemberRenderDTO>();
 
-        List<Member> listMember = memberRepository.findAll();
+        List<Member> listMember = memberRepository.findMemberByPage(size ,startInx);
+
+        for(Member member : listMember){
+            MemberRenderDTO memberRender = new MemberRenderDTO();
+            memberRender.setMemberNo(member.getMemberNo());
+            memberRender.setId(member.getId());
+            memberRender.setName(member.getName());
+            memberRender.setEmail(member.getEmail());
+            memberRender.setMobilePhone(member.getMobilePhone());
+            memberRender.setJoinDate(member.getJoinDate());
+
+            listMemberRender.add(memberRender);
+
+        }
+        return listMemberRender;
+    }
+
+    @Override
+    public List<MemberRenderDTO> listMemberSearch(MemberRenderDTO searchForm, int size, int startInx) {
+        List<MemberRenderDTO> listMemberRender = new ArrayList<MemberRenderDTO>();
+
+        List<Member> listMember = memberRepository.findMemberByPage(size ,startInx, searchForm.getId(), searchForm.getName(), searchForm.getMobilePhone(), searchForm.getJoinDate());
 
         for(Member member : listMember){
             MemberRenderDTO memberRender = new MemberRenderDTO();

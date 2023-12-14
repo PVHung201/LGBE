@@ -2,6 +2,8 @@ package com.example.memberManagement.service.serviceImpl;
 
 import com.example.memberManagement.model.dto.AuthenResponse;
 import com.example.memberManagement.model.dto.LoginForm;
+import com.example.memberManagement.model.entity.Member;
+import com.example.memberManagement.model.repository.MemberRepository;
 import com.example.memberManagement.service.AuthenticationService;
 import com.example.memberManagement.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,8 +27,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
 
     private final AuthenticationManager authenticationManager;
+
     @Autowired
     private final UserDetailsService userDetailsService;
+
+    @Autowired
+    MemberRepository memberRepository;
 
 
     @Override
@@ -37,6 +43,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         loginForm.getPassword()
                 )
         );
+
+        Member member = memberRepository.findMemberById(loginForm.getId());
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = (User) authentication.getPrincipal();
         String accessToken = jwtService.generateAccessToken(user);

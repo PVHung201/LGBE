@@ -26,8 +26,24 @@ public class MemberController {
 
     @CrossOrigin
     @GetMapping("/list")
-    public List<MemberRenderDTO> listMember(){
-        List<MemberRenderDTO> listMember= memberService.list();
+    public List<MemberRenderDTO> listMember(@RequestParam(value = "page", required = false) Integer page,
+                                            @RequestParam(value = "size", required = true) Integer size){
+
+        List<MemberRenderDTO> listMember= memberService.list(size, page*size);
         return listMember;
     }
+
+    @GetMapping("/list/search")
+    public List<MemberRenderDTO> listSearch(@RequestParam(name = "searchForm") MemberRenderDTO searchForm,
+                                            @RequestParam(value = "page", required = false) Integer page,
+                                            @RequestParam(value = "size", required = true) Integer size){
+
+        List<MemberRenderDTO> listMember = memberService.listMemberSearch(searchForm, size, page*size);
+        return listMember;
+
+    }
+
+
+
+
 }
