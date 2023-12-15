@@ -16,8 +16,9 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
     //List<Member> findAllBetween(int startInx, int endInx);
 
-    @Query(value = "SELECT * FROM Members WHERE LIKE like '%?1%' AND id LIKE '%?2' AND AND AND' LIMIT ?1 OFFSET ?2 ", nativeQuery = true)
-    List<Member> findMemberByPage(Integer size, Integer startInx, String Id, String name, String phone, Date joinDate);
+    //@Query(value = "SELECT * FROM Members LIMIT ?1 OFFSET ?2 ", nativeQuery = true)
+    List<Member> findAll();
+
 
     Member findMemberById(String id);
 

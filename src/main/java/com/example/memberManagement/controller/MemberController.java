@@ -1,14 +1,18 @@
 package com.example.memberManagement.controller;
 
+import com.example.memberManagement.model.dto.MemAndCountDTO;
 import com.example.memberManagement.model.dto.MemberDTO;
 import com.example.memberManagement.model.dto.MemberRenderDTO;
+import com.example.memberManagement.model.dto.SearchInqDTO;
 import com.example.memberManagement.model.entity.Member;
 import com.example.memberManagement.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/member")
@@ -26,24 +30,17 @@ public class MemberController {
 
     @CrossOrigin
     @GetMapping("/list")
-    public List<MemberRenderDTO> listMember(@RequestParam(value = "page", required = false) Integer page,
-                                            @RequestParam(value = "size", required = true) Integer size){
+    public List<MemberRenderDTO> listMember(){
 
-        List<MemberRenderDTO> listMember= memberService.list(size, page*size);
+        List<MemberRenderDTO> listMember= memberService.list();
         return listMember;
     }
 
-    @GetMapping("/list/search")
-    public List<MemberRenderDTO> listSearch(@RequestParam(name = "searchForm") MemberRenderDTO searchForm,
-                                            @RequestParam(value = "page", required = false) Integer page,
-                                            @RequestParam(value = "size", required = true) Integer size){
+    @PostMapping("/list/search")
+    public MemAndCountDTO listSearch(@RequestBody SearchInqDTO searchForm){
 
-        List<MemberRenderDTO> listMember = memberService.listMemberSearch(searchForm, size, page*size);
+        MemAndCountDTO listMember = memberService.listMemberSearch(searchForm, searchForm.getSize(), (searchForm.getPage())*(searchForm.getSize()));
         return listMember;
-
     }
-
-
-
 
 }

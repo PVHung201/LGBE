@@ -1,22 +1,24 @@
 package com.example.memberManagement.service.serviceImpl;
 
+import com.example.memberManagement.model.dto.MemAndCountDTO;
 import com.example.memberManagement.model.dto.MemberDTO;
 import com.example.memberManagement.model.dto.MemberRenderDTO;
+import com.example.memberManagement.model.dto.SearchInqDTO;
 import com.example.memberManagement.model.entity.Member;
+import com.example.memberManagement.model.repository.BaseRepository;
 import com.example.memberManagement.model.repository.MemberRepository;
 import com.example.memberManagement.service.MemberService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Transactional
 @Service
-public class MemberServiceImpl implements MemberService {
+public class MemberServiceImpl extends BaseRepository implements MemberService {
 
     @Autowired
     MemberRepository memberRepository;
@@ -25,10 +27,8 @@ public class MemberServiceImpl implements MemberService {
     PasswordEncoder passwordEncoder;
 
 
-
-
     @Override
-    public Member createMember(MemberDTO memberDTO){
+    public Member createMember(MemberDTO memberDTO) {
         Member member = new Member();
 
         Date date = new Date();
@@ -50,12 +50,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<MemberRenderDTO> list(int size, int startInx) {
+    public List<MemberRenderDTO> list() {
         List<MemberRenderDTO> listMemberRender = new ArrayList<MemberRenderDTO>();
 
-        List<Member> listMember = memberRepository.findMemberByPage(size ,startInx);
+        List<Member> listMember = memberRepository.findAll();
 
-        for(Member member : listMember){
+        for (Member member : listMember) {
             MemberRenderDTO memberRender = new MemberRenderDTO();
             memberRender.setMemberNo(member.getMemberNo());
             memberRender.setId(member.getId());
@@ -71,23 +71,72 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<MemberRenderDTO> listMemberSearch(MemberRenderDTO searchForm, int size, int startInx) {
-        List<MemberRenderDTO> listMemberRender = new ArrayList<MemberRenderDTO>();
+    public MemAndCountDTO listMemberSearch(SearchInqDTO searchForm, int size, int startInx) {
 
-        List<Member> listMember = memberRepository.findMemberByPage(size ,startInx, searchForm.getId(), searchForm.getName(), searchForm.getMobilePhone(), searchForm.getJoinDate());
+        Map<String, Object> map = new HashMap<>();
+        StringBuilder sql = new StringBuilder("SELECT " +
+                "members.member_no, " +
+                "members.id id, " +
+                "members.name name, " +
+                "members.mobile_phone, " +
+                "members.email, " +
+                "members.join_date " +
+                "FROM members WHERE 1 = 1 ");
 
-        for(Member member : listMember){
-            MemberRenderDTO memberRender = new MemberRenderDTO();
-            memberRender.setMemberNo(member.getMemberNo());
-            memberRender.setId(member.getId());
-            memberRender.setName(member.getName());
-            memberRender.setEmail(member.getEmail());
-            memberRender.setMobilePhone(member.getMobilePhone());
-            memberRender.setJoinDate(member.getJoinDate());
-
-            listMemberRender.add(memberRender);
-
+        if (searchForm.getId() != null && searchForm.getId().length() > 2) {
+            sql.append("AND members.id LIKE :id ");
+            map.put("id", "%" + searchForm.getId() + "%");
         }
-        return listMemberRender;
+
+        if (searchForm.getName() != null && searchForm.getName().length() > 1) {
+            sql.append("AND members.name LIKE :name ");
+            map.put("name", "%" + searchForm.getMobilePhone() + "%");
+        }
+
+        if (searchForm.getMobilePhone() != null && !searchForm.getMobilePhone().isEmpty()) {
+            sql.append("AND members.mobile_phone = :mobilePhone ");
+            map.put("mobilePhone", "%" + searchForm.getMobilePhone() + "%");
+        }
+
+        sql.append("AND members.join_date BETWEEN :beginDate AND :endDate ");
+        map.put("beginDate", searchForm.getBeginDate());
+        map.put("endDate", searchForm.getEndDate());
+
+
+        Integer count = getNamedParameterJdbcTemplateNormal().
+                query(sql.toString(), map, BeanPropertyRowMapper.newInstance(MemberRenderDTO.class))
+                .size();
+
+        sql.append("LIMIT :size OFFSET :startInx");
+        map.put("startInx", startInx);
+        map.put("size", size);
+
+        List<MemberRenderDTO> dataTable = getNamedParameterJdbcTemplateNormal()
+                .query(sql.toString(), map, BeanPropertyRowMapper.newInstance(MemberRenderDTO.class));
+
+        MemAndCountDTO result = new MemAndCountDTO();
+
+        result.setListMemberRen(dataTable);
+        result.setCount(count);
+
+
+        return result;
+
+
+//        List<MemberRenderDTO> listMemberRender = new ArrayList<MemberRenderDTO>();
+//        List<Member> listMember = memberRepository.findMemberByPage(size ,startInx, searchForm.getId(), searchForm.getName(), searchForm.getMobilePhone(), searchForm.getBeginDate(), searchForm.getEndDate());
+//        for(Member member : listMember){
+//            MemberRenderDTO memberRender = new MemberRenderDTO();
+//            memberRender.setMemberNo(member.getMemberNo());
+//            memberRender.setId(member.getId());
+//            memberRender.setName(member.getName());
+//            memberRender.setEmail(member.getEmail());
+//            memberRender.setMobilePhone(member.getMobilePhone());
+//            memberRender.setJoinDate(member.getJoinDate());
+//            listMemberRender.add(memberRender);
+//        }
+//        return listMemberRender;
     }
+
+
 }

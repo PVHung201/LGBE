@@ -60,4 +60,5 @@ public class MemberRenderDTO {
     public void setJoinDate(Date joinDate) {
         this.joinDate = joinDate;
     }
+
 }
