@@ -94,7 +94,7 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
         }
 
         if (searchForm.getMobilePhone() != null && !searchForm.getMobilePhone().isEmpty()) {
-            sql.append("AND members.mobile_phone = :mobilePhone ");
+            sql.append("AND members.mobile_phone LIKE :mobilePhone ");
             map.put("mobilePhone", "%" + searchForm.getMobilePhone() + "%");
         }
 
@@ -117,6 +117,7 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
         MemAndCountDTO result = new MemAndCountDTO();
 
         result.setListMemberRen(dataTable);
+        System.out.println(result.getListMemberRen());
         result.setCount(count);
 
 
