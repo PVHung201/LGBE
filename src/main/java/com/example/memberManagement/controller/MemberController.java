@@ -7,6 +7,7 @@ import com.example.memberManagement.model.dto.SearchInqDTO;
 import com.example.memberManagement.model.entity.Member;
 import com.example.memberManagement.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,8 @@ public class MemberController {
 
     @CrossOrigin
     @PostMapping("/register")
-    public Member createMember(@RequestBody @Validated MemberDTO memberDTO){
-        Member member = memberService.createMember(memberDTO);
+    public  ResponseEntity<Object> createMember(@RequestBody @Validated MemberDTO memberDTO){
+        ResponseEntity<Object> member = memberService.createMember(memberDTO);
         return member;
     }
 

@@ -5,6 +5,7 @@ import com.example.memberManagement.model.dto.LoginForm;
 import com.example.memberManagement.model.entity.Member;
 import com.example.memberManagement.model.repository.MemberRepository;
 import com.example.memberManagement.service.AuthenticationService;
+import com.example.memberManagement.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

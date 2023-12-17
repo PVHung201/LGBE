@@ -10,13 +10,14 @@ import com.example.memberManagement.model.repository.MemberRepository;
 import com.example.memberManagement.service.MemberService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@Transactional
 @Service
 public class MemberServiceImpl extends BaseRepository implements MemberService {
 
@@ -28,9 +29,19 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
 
 
     @Override
-    public Member createMember(MemberDTO memberDTO) {
-        Member member = new Member();
+    @Transactional
+    public ResponseEntity<Object> createMember(MemberDTO memberDTO) {
 
+        Member dupMemberId = memberRepository.findMemberById(memberDTO.getId());
+
+        if(dupMemberId != null){
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Duplicate ID");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+
+
+        Member member = new Member();
         Date date = new Date();
         member.setMemberNo(0);
         member.setId(memberDTO.getId());
@@ -42,10 +53,8 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
         member.setRoleId(memberDTO.getRoleId());
         member.setJoinDate(date);
         member = memberRepository.save(member);
-//
-//        var jwtToken = jwtService.generateAccessToken(member);
 
-        return member;
+        return new ResponseEntity<>("Registration successful", HttpStatus.OK);
 
     }
 

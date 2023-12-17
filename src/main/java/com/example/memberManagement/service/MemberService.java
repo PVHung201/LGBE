@@ -5,6 +5,7 @@ import com.example.memberManagement.model.dto.MemberDTO;
 import com.example.memberManagement.model.dto.MemberRenderDTO;
 import com.example.memberManagement.model.dto.SearchInqDTO;
 import com.example.memberManagement.model.entity.Member;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 @Service
 public interface MemberService {
 
-    Member createMember(MemberDTO memberDTO);
+    ResponseEntity<Object> createMember(MemberDTO memberDTO);
 
     List<MemberRenderDTO> list();
 
