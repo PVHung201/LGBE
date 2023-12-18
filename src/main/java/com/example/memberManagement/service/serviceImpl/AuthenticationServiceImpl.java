@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +20,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -36,21 +41,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public AuthenResponse authenticate(LoginForm loginForm) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginForm.getId(),
-                        loginForm.getPassword()
-                )
-        );
+    public ResponseEntity<Object> authenticate(LoginForm loginForm) {
 
-        Member member = memberRepository.findMemberById(loginForm.getId());
+        Authentication authentication = null;
+
+        try{
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginForm.getId(),
+                            loginForm.getPassword()
+                    )
+            );
+        } catch (Exception e){
+
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Please check id or password again");
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+
+        }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = (User) authentication.getPrincipal();
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
-        return new AuthenResponse(accessToken, refreshToken);
+        AuthenResponse authenResponse = new AuthenResponse(accessToken, refreshToken);
+        return ResponseEntity.ok(authenResponse);
     }
 
     @Override

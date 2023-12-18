@@ -23,8 +23,8 @@ public class AuthController {
     private final MemberRepository memberRepository;
 
     @PostMapping(value = "/login")
-    public AuthenResponse login(LoginForm loginForm){
-        AuthenResponse authenResponse = authenticationService.authenticate(loginForm);
+    public ResponseEntity<Object> login(LoginForm loginForm){
+        ResponseEntity<Object> authenResponse = authenticationService.authenticate(loginForm);
         return authenResponse;
     }
 
