@@ -19,5 +19,7 @@ public interface MemberService {
 
     MemAndCountDTO listMemberSearch(SearchInqDTO searchForm, int size, int startInx);
 
+    List<MemberRenderDTO> listMemberSearch(SearchInqDTO searchForm);
+
 
 }

@@ -1,16 +1,20 @@
 package com.example.memberManagement.controller;
 
+import com.example.memberManagement.common.ExcelGenerator;
 import com.example.memberManagement.model.dto.MemAndCountDTO;
 import com.example.memberManagement.model.dto.MemberDTO;
 import com.example.memberManagement.model.dto.MemberRenderDTO;
 import com.example.memberManagement.model.dto.SearchInqDTO;
 import com.example.memberManagement.model.entity.Member;
 import com.example.memberManagement.service.MemberService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,5 +47,25 @@ public class MemberController {
         MemAndCountDTO listMember = memberService.listMemberSearch(searchForm, searchForm.getSize(), (searchForm.getPage())*(searchForm.getSize()));
         return listMember;
     }
+
+    @PostMapping("/exportExcel")
+    public void exportExcel(@RequestBody SearchInqDTO searchForm, HttpServletResponse response) throws IOException {
+        List<MemberRenderDTO> listMember = memberService.listMemberSearch(searchForm);
+        String fileName = "List member " + ".xlsx";
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=\"" + fileName + "\"";
+
+
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader(headerKey, headerValue);
+        //ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        ExcelGenerator generator = new ExcelGenerator(listMember);
+        generator.generateExcelFile(response);
+
+
+    }
+
+
 
 }
