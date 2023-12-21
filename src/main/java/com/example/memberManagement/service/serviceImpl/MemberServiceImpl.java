@@ -16,6 +16,11 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -39,7 +44,6 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
             errorResponse.put("error", "Duplicate ID");
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
-
 
         Member member = new Member();
         Date date = new Date();
@@ -90,7 +94,7 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
                 "members.mobile_phone, " +
                 "members.email, " +
                 "members.join_date " +
-                "FROM members WHERE 1 = 1 ");
+                "FROM members WHERE 1 = 1 AND status = 0 ");
 
         if (searchForm.getId() != null && searchForm.getId().length() > 2) {
             sql.append("AND members.id LIKE :id ");
@@ -108,8 +112,8 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
         }
 
         sql.append("AND members.join_date BETWEEN :beginDate AND :endDate ");
-        map.put("beginDate", searchForm.getBeginDate());
-        map.put("endDate", searchForm.getEndDate());
+        map.put("beginDate", searchForm.getBeginDate() );
+        map.put("endDate", addOneDay(searchForm.getEndDate()));
 
 
         Integer count = getNamedParameterJdbcTemplateNormal().
@@ -144,7 +148,7 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
                 "members.mobile_phone, " +
                 "members.email, " +
                 "members.join_date " +
-                "FROM members WHERE 1 = 1 ");
+                "FROM members WHERE 1 = 1 AND status = 0 ");
 
         if (searchForm.getId() != null && searchForm.getId().length() > 2) {
             sql.append("AND members.id LIKE :id ");
@@ -174,6 +178,31 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
         System.out.println(result);
 
         return result;
+    }
+
+    @Override
+    public Integer deleteMember(int numberNo) {
+//        Member deleteMember = MemberRepository.deleteMember(Integer id);
+        Member deleteMember = memberRepository.findMemberByMemberNo(numberNo);
+        deleteMember.setStatus(1);
+        Member delMemer = memberRepository.save(deleteMember);
+        return 0;
+    }
+
+    public Date addOneDay(Date oldDate){
+//        LocalDateTime newDate =  LocalDateTime.from(oldDate.toInstant()).plusDays(1);
+//        return Date.from(newDate.atZone(ZoneId.systemDefault()).toInstant());
+
+        // Chuyển đối tượng Date thành Calendar
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(oldDate);
+
+        // Tăng một ngày
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+        // Lấy đối tượng Date mới
+        Date newDate = calendar.getTime();
+        return newDate;
     }
 
 

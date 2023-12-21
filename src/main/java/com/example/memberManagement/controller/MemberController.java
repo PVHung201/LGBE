@@ -5,7 +5,6 @@ import com.example.memberManagement.model.dto.MemAndCountDTO;
 import com.example.memberManagement.model.dto.MemberDTO;
 import com.example.memberManagement.model.dto.MemberRenderDTO;
 import com.example.memberManagement.model.dto.SearchInqDTO;
-import com.example.memberManagement.model.entity.Member;
 import com.example.memberManagement.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/member")
@@ -64,6 +60,12 @@ public class MemberController {
         generator.generateExcelFile(response);
 
 
+    }
+
+    @PutMapping("/delete/{id}")
+    public int deleteMember(@PathVariable(name = "id") int id){
+        int deleteMember = memberService.deleteMember(id);
+        return deleteMember;
     }
 
 

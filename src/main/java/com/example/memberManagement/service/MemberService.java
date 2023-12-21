@@ -21,5 +21,7 @@ public interface MemberService {
 
     List<MemberRenderDTO> listMemberSearch(SearchInqDTO searchForm);
 
+    Integer deleteMember(int id);
+
 
 }
