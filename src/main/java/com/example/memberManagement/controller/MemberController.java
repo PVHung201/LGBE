@@ -5,9 +5,11 @@ import com.example.memberManagement.model.dto.MemAndCountDTO;
 import com.example.memberManagement.model.dto.MemberDTO;
 import com.example.memberManagement.model.dto.MemberRenderDTO;
 import com.example.memberManagement.model.dto.SearchInqDTO;
+import com.example.memberManagement.model.entity.Member;
 import com.example.memberManagement.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +42,13 @@ public class MemberController {
     @PostMapping("/list/search")
     public MemAndCountDTO listSearch(@RequestBody SearchInqDTO searchForm){
 
-        MemAndCountDTO listMember = memberService.listMemberSearch(searchForm, searchForm.getSize(), (searchForm.getPage())*(searchForm.getSize()));
+        MemAndCountDTO listMember = memberService.listMemberSearch(searchForm, 0, searchForm.getSize(), (searchForm.getPage())*(searchForm.getSize()));
+        return listMember;
+    }
+
+    @PostMapping("/list/leavedMem")
+    public MemAndCountDTO listLeavedMem(@RequestBody SearchInqDTO searchForm){
+        MemAndCountDTO listMember = memberService.listMemberSearch(searchForm, 1, searchForm.getSize(), (searchForm.getPage())*(searchForm.getSize()));
         return listMember;
     }
 
@@ -63,9 +71,15 @@ public class MemberController {
     }
 
     @PutMapping("/delete/{id}")
-    public int deleteMember(@PathVariable(name = "id") int id){
+    public ResponseEntity<Object> deleteMember(@PathVariable(name = "id") int id){
         int deleteMember = memberService.deleteMember(id);
-        return deleteMember;
+        return new ResponseEntity<>(deleteMember, HttpStatus.OK);
+    }
+
+    @PutMapping("/comeBack/{id}")
+    public ResponseEntity<Member> memComeBack(@PathVariable(name = "id") int memberNo){
+        Member memberComeBack = memberService.comeBack(memberNo);
+        return new ResponseEntity<>(memberComeBack, HttpStatus.OK);
     }
 
 

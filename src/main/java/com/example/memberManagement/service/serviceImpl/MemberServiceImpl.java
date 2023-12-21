@@ -84,7 +84,7 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
     }
 
     @Override
-    public MemAndCountDTO listMemberSearch(SearchInqDTO searchForm, int size, int startInx) {
+    public MemAndCountDTO listMemberSearch(SearchInqDTO searchForm,int status, int size, int startInx) {
 
         Map<String, Object> map = new HashMap<>();
         StringBuilder sql = new StringBuilder("SELECT " +
@@ -94,7 +94,10 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
                 "members.mobile_phone, " +
                 "members.email, " +
                 "members.join_date " +
-                "FROM members WHERE 1 = 1 AND status = 0 ");
+                "FROM members WHERE 1 = 1 ");
+
+        sql.append("AND members.status = :status ");
+        map.put("status", status);
 
         if (searchForm.getId() != null && searchForm.getId().length() > 2) {
             sql.append("AND members.id LIKE :id ");
@@ -182,11 +185,18 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
 
     @Override
     public Integer deleteMember(int numberNo) {
-//        Member deleteMember = MemberRepository.deleteMember(Integer id);
         Member deleteMember = memberRepository.findMemberByMemberNo(numberNo);
         deleteMember.setStatus(1);
         Member delMemer = memberRepository.save(deleteMember);
         return 0;
+    }
+
+    @Override
+    public Member comeBack(int memberNo) {
+        Member memberComeBack = memberRepository.findMemberByMemberNo(memberNo);
+        memberComeBack.setStatus(0);
+        Member comeBack = memberRepository.save(memberComeBack);
+        return comeBack;
     }
 
     public Date addOneDay(Date oldDate){

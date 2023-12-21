@@ -17,11 +17,13 @@ public interface MemberService {
 
     List<MemberRenderDTO> list();
 
-    MemAndCountDTO listMemberSearch(SearchInqDTO searchForm, int size, int startInx);
+    MemAndCountDTO listMemberSearch(SearchInqDTO searchForm, int status, int size, int startInx);
 
     List<MemberRenderDTO> listMemberSearch(SearchInqDTO searchForm);
 
     Integer deleteMember(int id);
+
+    Member comeBack(int memberNo);
 
 
 }
