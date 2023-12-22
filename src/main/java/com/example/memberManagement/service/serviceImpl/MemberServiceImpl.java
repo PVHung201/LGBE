@@ -170,7 +170,7 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
 
         sql.append("AND members.join_date BETWEEN :beginDate AND :endDate ");
         map.put("beginDate", searchForm.getBeginDate());
-        map.put("endDate", searchForm.getEndDate());
+        map.put("endDate", addOneDay(searchForm.getEndDate()));
 
         List<MemberRenderDTO> dataTable = getNamedParameterJdbcTemplateNormal()
                 .query(sql.toString(), map, BeanPropertyRowMapper.newInstance(MemberRenderDTO.class));
@@ -183,6 +183,7 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
         return result;
     }
 
+    @Transactional
     @Override
     public Integer deleteMember(int numberNo) {
         Member deleteMember = memberRepository.findMemberByMemberNo(numberNo);
@@ -191,6 +192,7 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
         return 0;
     }
 
+    @Transactional
     @Override
     public Member comeBack(int memberNo) {
         Member memberComeBack = memberRepository.findMemberByMemberNo(memberNo);
@@ -199,19 +201,10 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
         return comeBack;
     }
 
+    // Add 1 day to endDate
     public Date addOneDay(Date oldDate){
-//        LocalDateTime newDate =  LocalDateTime.from(oldDate.toInstant()).plusDays(1);
-//        return Date.from(newDate.atZone(ZoneId.systemDefault()).toInstant());
 
-        // Chuyển đối tượng Date thành Calendar
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(oldDate);
-
-        // Tăng một ngày
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-
-        // Lấy đối tượng Date mới
-        Date newDate = calendar.getTime();
+        Date newDate = new Date(oldDate.getTime() + (1000*60*60*24));
         return newDate;
     }
 

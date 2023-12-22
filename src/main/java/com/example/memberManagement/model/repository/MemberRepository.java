@@ -20,9 +20,6 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
     Member findMemberById(String id);
 
-//    @Query("UPDATE members SET status = 1 WHERE number_no = ?1")
-//    public Integer deleteMember(Integer int);
-
     public Member findMemberByMemberNo(int numberNo);
 
 }
