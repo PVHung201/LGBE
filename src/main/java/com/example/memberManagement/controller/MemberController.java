@@ -24,14 +24,12 @@ public class MemberController {
     @Autowired
     MemberService memberService;
 
-    @CrossOrigin
     @PostMapping("/register")
     public  ResponseEntity<Object> createMember(@RequestBody @Validated MemberDTO memberDTO){
         ResponseEntity<Object> member = memberService.createMember(memberDTO);
         return member;
     }
 
-    @CrossOrigin
     @GetMapping("/list")
     public List<MemberRenderDTO> listMember(){
 
@@ -54,7 +52,25 @@ public class MemberController {
 
     @PostMapping("/exportExcel")
     public void exportExcel(@RequestBody SearchInqDTO searchForm, HttpServletResponse response) throws IOException {
-        List<MemberRenderDTO> listMember = memberService.listMemberSearch(searchForm);
+        List<MemberRenderDTO> listMember = memberService.listMemberSearch(searchForm, 0);
+        String fileName = "List member " + ".xlsx";
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=\"" + fileName + "\"";
+
+
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader(headerKey, headerValue);
+        //ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        ExcelGenerator generator = new ExcelGenerator(listMember);
+        generator.generateExcelFile(response);
+
+
+    }
+
+    @PostMapping("/exportExcelExMem")
+    public void exportExcelExMem(@RequestBody SearchInqDTO searchForm, HttpServletResponse response) throws IOException {
+        List<MemberRenderDTO> listMember = memberService.listMemberSearch(searchForm, 1);
         String fileName = "List member " + ".xlsx";
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=\"" + fileName + "\"";

@@ -19,7 +19,7 @@ public interface MemberService {
 
     MemAndCountDTO listMemberSearch(SearchInqDTO searchForm, int status, int size, int startInx);
 
-    List<MemberRenderDTO> listMemberSearch(SearchInqDTO searchForm);
+    List<MemberRenderDTO> listMemberSearch(SearchInqDTO searchForm, int status);
 
     Integer deleteMember(int id);
 

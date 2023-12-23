@@ -142,7 +142,7 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
     }
 
     @Override
-    public List<MemberRenderDTO> listMemberSearch(SearchInqDTO searchForm) {
+    public List<MemberRenderDTO> listMemberSearch(SearchInqDTO searchForm, int status) {
         Map<String, Object> map = new HashMap<>();
         StringBuilder sql = new StringBuilder("SELECT " +
                 "members.member_no, " +
@@ -151,7 +151,10 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
                 "members.mobile_phone, " +
                 "members.email, " +
                 "members.join_date " +
-                "FROM members WHERE 1 = 1 AND status = 0 ");
+                "FROM members WHERE 1 = 1 ");
+
+        sql.append("AND members.status = :status ");
+        map.put("status", status);
 
         if (searchForm.getId() != null && searchForm.getId().length() > 2) {
             sql.append("AND members.id LIKE :id ");
