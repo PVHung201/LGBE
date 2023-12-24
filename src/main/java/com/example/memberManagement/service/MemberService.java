@@ -25,5 +25,5 @@ public interface MemberService {
 
     Member comeBack(int memberNo);
 
-
+    void sendNotificationEmail(MemberDTO memberDTO);
 }

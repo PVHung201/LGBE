@@ -13,14 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -31,6 +28,10 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
 
 
     @Override
@@ -58,9 +59,35 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
         member.setJoinDate(date);
         member = memberRepository.save(member);
 
+        if(memberDTO.getEmail() != null){
+            sendNotificationEmail(memberDTO);
+        }
+
+
         return new ResponseEntity<>("Registration successful", HttpStatus.OK);
 
     }
+
+    @Override
+    public void sendNotificationEmail(MemberDTO memberDTO){
+
+        String toAddress = memberDTO.getEmail();
+        String fromAddress = "pvhung2001@gmail.com";
+        String senderName = "Life Care Member Managemenet System";
+        String subject = "Welcome to become a member of Life Care group";
+        String content = "Dear [[name]],"
+                        + "Your account has been created on the Life Care group member management system";
+        SimpleMailMessage message = new SimpleMailMessage();
+        content = content.replace("[[name]]", memberDTO.getName());
+        message.setFrom(fromAddress);
+        message.setTo(toAddress);
+        message.setSubject(subject);
+        message.setText(content);
+        mailSender.send(message);
+
+    }
+
+
 
     @Override
     public List<MemberRenderDTO> list() {
