@@ -53,20 +53,6 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
-//        http
-//                .csrf(csrf->csrf.disable())
-//                .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers("/api/auth/**").permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                .httpBasic();
-//        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-//        return http.build();
-
-
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
         csrfTokenRequestAttributeHandler.setCsrfRequestAttributeName("_csrf");
 
@@ -80,15 +66,14 @@ public class SecurityConfig {
                         .ignoringRequestMatchers(
                                 "/api/v1/login",
                                 "/api/v1/member/register",
-                                "api/v1/member/lít"
+                                "api/v1/member/list"
                         )
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry.requestMatchers(
 
-                       "/api/v1/member/register",
+                        "/api/v1/member/register",
                         "/api/v1/auth/**"
-///                        "/api/v1/member/list"
                 ).permitAll().anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

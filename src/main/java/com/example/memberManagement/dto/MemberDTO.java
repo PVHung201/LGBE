@@ -1,17 +1,19 @@
-package com.example.memberManagement.model.dto;
+package com.example.memberManagement.dto;
 
-import java.util.Date;
+public class MemberDTO {
 
-public class MemberRenderDTO {
+
     private int memberNo;
+
     private String id;
+    private String password;
     private String name;
 
-    private String mobilePhone;
+    private int mobilePhone;
 
     private String email;
 
-    private Date joinDate;
+    private int roleId;
 
     public int getMemberNo() {
         return memberNo;
@@ -29,6 +31,14 @@ public class MemberRenderDTO {
         this.id = id;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getName() {
         return name;
     }
@@ -37,11 +47,11 @@ public class MemberRenderDTO {
         this.name = name;
     }
 
-    public String getMobilePhone() {
+    public int getMobilePhone() {
         return mobilePhone;
     }
 
-    public void setMobilePhone(String mobilePhone) {
+    public void setMobilePhone(int mobilePhone) {
         this.mobilePhone = mobilePhone;
     }
 
@@ -53,12 +63,11 @@ public class MemberRenderDTO {
         this.email = email;
     }
 
-    public Date getJoinDate() {
-        return joinDate;
+    public int getRoleId() {
+        return roleId;
     }
 
-    public void setJoinDate(Date joinDate) {
-        this.joinDate = joinDate;
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
-
 }

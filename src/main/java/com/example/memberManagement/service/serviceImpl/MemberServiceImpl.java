@@ -1,13 +1,15 @@
 package com.example.memberManagement.service.serviceImpl;
 
-import com.example.memberManagement.model.dto.MemAndCountDTO;
-import com.example.memberManagement.model.dto.MemberDTO;
-import com.example.memberManagement.model.dto.MemberRenderDTO;
-import com.example.memberManagement.model.dto.SearchInqDTO;
-import com.example.memberManagement.model.entity.Member;
-import com.example.memberManagement.model.repository.BaseRepository;
-import com.example.memberManagement.model.repository.MemberRepository;
+import com.example.memberManagement.Util.ExcelGeneratorUtil;
+import com.example.memberManagement.dto.MemAndCountDTO;
+import com.example.memberManagement.dto.MemberDTO;
+import com.example.memberManagement.dto.MemberRenderDTO;
+import com.example.memberManagement.dto.SearchInqDTO;
+import com.example.memberManagement.entity.Member;
+import com.example.memberManagement.repository.BaseRepository;
+import com.example.memberManagement.repository.MemberRepository;
 import com.example.memberManagement.service.MemberService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -33,14 +36,13 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
     private JavaMailSender mailSender;
 
 
-
     @Override
     @Transactional
     public ResponseEntity<Object> createMember(MemberDTO memberDTO) {
 
         Member dupMemberId = memberRepository.findMemberById(memberDTO.getId());
 
-        if(dupMemberId != null){
+        if (dupMemberId != null) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "Duplicate ID");
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -59,7 +61,7 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
         member.setJoinDate(date);
         member = memberRepository.save(member);
 
-        if(memberDTO.getEmail() != null){
+        if (memberDTO.getEmail() != null) {
             sendNotificationEmail(memberDTO);
         }
 
@@ -69,14 +71,14 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
     }
 
     @Override
-    public void sendNotificationEmail(MemberDTO memberDTO){
+    public void sendNotificationEmail(MemberDTO memberDTO) {
 
         String toAddress = memberDTO.getEmail();
         String fromAddress = "pvhung2001@gmail.com";
         String senderName = "Life Care Member Managemenet System";
         String subject = "Welcome to become a member of Life Care group";
         String content = "Dear [[name]],"
-                        + "Your account has been created on the Life Care group member management system";
+                + "Your account has been created on the Life Care group member management system";
         SimpleMailMessage message = new SimpleMailMessage();
         content = content.replace("[[name]]", memberDTO.getName());
         message.setFrom(fromAddress);
@@ -86,7 +88,6 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
         mailSender.send(message);
 
     }
-
 
 
     @Override
@@ -111,7 +112,7 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
     }
 
     @Override
-    public MemAndCountDTO listMemberSearch(SearchInqDTO searchForm,int status, int size, int startInx) {
+    public MemAndCountDTO listMemberSearch(SearchInqDTO searchForm, int status, int size, int startInx) {
 
         Map<String, Object> map = new HashMap<>();
         StringBuilder sql = new StringBuilder("SELECT " +
@@ -142,7 +143,7 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
         }
 
         sql.append("AND members.join_date BETWEEN :beginDate AND :endDate ");
-        map.put("beginDate", searchForm.getBeginDate() );
+        map.put("beginDate", searchForm.getBeginDate());
         map.put("endDate", addOneDay(searchForm.getEndDate()));
 
 
@@ -232,10 +233,24 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
     }
 
     // Add 1 day to endDate
-    public Date addOneDay(Date oldDate){
+    public Date addOneDay(Date oldDate) {
 
-        Date newDate = new Date(oldDate.getTime() + (1000*60*60*24));
+        Date newDate = new Date(oldDate.getTime() + (1000 * 60 * 60 * 24));
         return newDate;
+    }
+
+    public void exportExcel(HttpServletResponse response, SearchInqDTO searchForm) throws IOException {
+
+        List<MemberRenderDTO> listMember = listMemberSearch(searchForm, searchForm.getStatus());
+
+        String fileName = "List member " + ".xlsx";
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=\"" + fileName + "\"";
+
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader(headerKey, headerValue);
+
+        ExcelGeneratorUtil.generateExcelFile(response, listMember);
     }
 
 

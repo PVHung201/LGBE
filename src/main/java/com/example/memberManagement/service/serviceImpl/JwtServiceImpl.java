@@ -45,7 +45,6 @@ public class JwtServiceImpl implements JwtService {
     }
 
 
-
     @Override
     public String generateAccessToken(UserDetails userDetails) {
         return generateAccessToken(new HashMap<>(), userDetails);
@@ -55,7 +54,7 @@ public class JwtServiceImpl implements JwtService {
         return buildToken(extraClaims, userDetails, jwtExpiration, "Access");
     }
 
-    public String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, Long expiration,String type) {
+    public String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, Long expiration, String type) {
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())

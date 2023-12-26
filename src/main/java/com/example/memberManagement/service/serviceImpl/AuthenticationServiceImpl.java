@@ -1,9 +1,8 @@
 package com.example.memberManagement.service.serviceImpl;
 
-import com.example.memberManagement.model.dto.AuthenResponse;
-import com.example.memberManagement.model.dto.LoginForm;
-import com.example.memberManagement.model.entity.Member;
-import com.example.memberManagement.model.repository.MemberRepository;
+import com.example.memberManagement.dto.AuthenResponse;
+import com.example.memberManagement.dto.LoginForm;
+import com.example.memberManagement.repository.MemberRepository;
 import com.example.memberManagement.service.AuthenticationService;
 import com.example.memberManagement.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,18 +44,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         Authentication authentication = null;
 
-        try{
+        try {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginForm.getId(),
                             loginForm.getPassword()
                     )
             );
-        } catch (Exception e){
+        } catch (Exception e) {
 
-                Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("error", "Please check id or password again");
-                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Please check id or password again");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
         }
 
@@ -73,14 +72,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         final String authenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String username;
-        if(authenHeader == null || !authenHeader.startsWith("Bearer ")){
+        if (authenHeader == null || !authenHeader.startsWith("Bearer ")) {
             return null;
         }
         refreshToken = authenHeader.substring(7);
         username = jwtService.extractUsername(refreshToken);
-        if(username != null){
+        if (username != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if(jwtService.isTokenValid(refreshToken, userDetails)){
+            if (jwtService.isTokenValid(refreshToken, userDetails)) {
                 String accessToken = jwtService.generateAccessToken(userDetails);
                 String newRefreshToken = jwtService.generateRefreshToken(userDetails);
                 return new AuthenResponse(accessToken, newRefreshToken);

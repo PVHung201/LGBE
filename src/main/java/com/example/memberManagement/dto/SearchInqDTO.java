@@ -1,4 +1,4 @@
-package com.example.memberManagement.model.dto;
+package com.example.memberManagement.dto;
 
 import java.util.Date;
 
@@ -12,6 +12,16 @@ public class SearchInqDTO {
     private int size;
 
     private int page;
+
+    private int status;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public String getId() {
         return id;

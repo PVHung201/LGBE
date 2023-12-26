@@ -11,25 +11,24 @@ import java.util.function.Function;
 
 @Service
 public interface JwtService {
-    public Claims extractAllClaims(String token);
+    Claims extractAllClaims(String token);
 
-//    public <T> extractClaim(String token, Function<Claims, T> claimsResolver);
 
-    public String generateAccessToken(UserDetails userDetails);
+    String generateAccessToken(UserDetails userDetails);
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
+    <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
 
-    public String extractUsername(String token);
+    String extractUsername(String token);
 
-    public String generateRefreshToken(UserDetails userDetails);
+    String generateRefreshToken(UserDetails userDetails);
 
-    public boolean isTokenValid(String token, UserDetails userDetails);
+    boolean isTokenValid(String token, UserDetails userDetails);
 
-    public boolean isTokenExpired(String token);
+    boolean isTokenExpired(String token);
 
-    public Date extractExpiration(String token);
+    Date extractExpiration(String token);
 
-    public String extractType(String token);
+    String extractType(String token);
 
-    public Key getSignInKey();
+    Key getSignInKey();
 }

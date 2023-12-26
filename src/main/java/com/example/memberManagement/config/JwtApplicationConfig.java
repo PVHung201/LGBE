@@ -1,7 +1,7 @@
 package com.example.memberManagement.config;
 
-import com.example.memberManagement.model.entity.Member;
-import com.example.memberManagement.model.repository.MemberRepository;
+import com.example.memberManagement.entity.Member;
+import com.example.memberManagement.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,25 +30,25 @@ public class JwtApplicationConfig {
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public UserDetailsService userDetailsService(){
+    public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
 
                 Member member = null;
 
-                try{
+                try {
                     member = memberRepository.findMemberById(id);
-                } catch ( Exception e){
+                } catch (Exception e) {
                     throw new UsernameNotFoundException("Không tìm thấy người dùng với email: " + member);
                 }
 
-                if(member != null){
+                if (member != null) {
                     return User.builder()
                             .username(member.getId()) // Sử dụng trường email làm tên đăng nhập
                             .password(member.getPassword())

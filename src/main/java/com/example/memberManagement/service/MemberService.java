@@ -1,13 +1,15 @@
 package com.example.memberManagement.service;
 
-import com.example.memberManagement.model.dto.MemAndCountDTO;
-import com.example.memberManagement.model.dto.MemberDTO;
-import com.example.memberManagement.model.dto.MemberRenderDTO;
-import com.example.memberManagement.model.dto.SearchInqDTO;
-import com.example.memberManagement.model.entity.Member;
+import com.example.memberManagement.dto.MemAndCountDTO;
+import com.example.memberManagement.dto.MemberDTO;
+import com.example.memberManagement.dto.MemberRenderDTO;
+import com.example.memberManagement.dto.SearchInqDTO;
+import com.example.memberManagement.entity.Member;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -26,4 +28,6 @@ public interface MemberService {
     Member comeBack(int memberNo);
 
     void sendNotificationEmail(MemberDTO memberDTO);
+
+    void exportExcel(HttpServletResponse response, SearchInqDTO searchForm) throws IOException;
 }

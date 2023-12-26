@@ -1,11 +1,10 @@
 package com.example.memberManagement.controller;
 
-import com.example.memberManagement.common.ExcelGenerator;
-import com.example.memberManagement.model.dto.MemAndCountDTO;
-import com.example.memberManagement.model.dto.MemberDTO;
-import com.example.memberManagement.model.dto.MemberRenderDTO;
-import com.example.memberManagement.model.dto.SearchInqDTO;
-import com.example.memberManagement.model.entity.Member;
+import com.example.memberManagement.dto.MemAndCountDTO;
+import com.example.memberManagement.dto.MemberDTO;
+import com.example.memberManagement.dto.MemberRenderDTO;
+import com.example.memberManagement.dto.SearchInqDTO;
+import com.example.memberManagement.entity.Member;
 import com.example.memberManagement.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,79 +24,46 @@ public class MemberController {
     MemberService memberService;
 
     @PostMapping("/register")
-    public  ResponseEntity<Object> createMember(@RequestBody @Validated MemberDTO memberDTO){
+    public ResponseEntity<Object> createMember(@RequestBody @Validated MemberDTO memberDTO) {
         ResponseEntity<Object> member = memberService.createMember(memberDTO);
         return member;
     }
 
     @GetMapping("/list")
-    public List<MemberRenderDTO> listMember(){
+    public List<MemberRenderDTO> listMember() {
 
-        List<MemberRenderDTO> listMember= memberService.list();
+        List<MemberRenderDTO> listMember = memberService.list();
         return listMember;
     }
 
-    @PostMapping("/list/search")
-    public MemAndCountDTO listSearch(@RequestBody SearchInqDTO searchForm){
+    @PostMapping("/search")
+    public MemAndCountDTO listSearch(@RequestBody SearchInqDTO searchForm) {
 
-        MemAndCountDTO listMember = memberService.listMemberSearch(searchForm, 0, searchForm.getSize(), (searchForm.getPage())*(searchForm.getSize()));
+        MemAndCountDTO listMember = memberService.listMemberSearch(searchForm, searchForm.getStatus(), searchForm.getSize(), (searchForm.getPage()) * (searchForm.getSize()));
         return listMember;
     }
 
-    @PostMapping("/list/leavedMem")
-    public MemAndCountDTO listLeavedMem(@RequestBody SearchInqDTO searchForm){
-        MemAndCountDTO listMember = memberService.listMemberSearch(searchForm, 1, searchForm.getSize(), (searchForm.getPage())*(searchForm.getSize()));
-        return listMember;
-    }
 
     @PostMapping("/exportExcel")
     public void exportExcel(@RequestBody SearchInqDTO searchForm, HttpServletResponse response) throws IOException {
-        List<MemberRenderDTO> listMember = memberService.listMemberSearch(searchForm, 0);
-        String fileName = "List member " + ".xlsx";
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=\"" + fileName + "\"";
 
-
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader(headerKey, headerValue);
-        //ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        ExcelGenerator generator = new ExcelGenerator(listMember);
-        generator.generateExcelFile(response);
+        memberService.exportExcel(response, searchForm);
 
 
     }
 
-    @PostMapping("/exportExcelExMem")
-    public void exportExcelExMem(@RequestBody SearchInqDTO searchForm, HttpServletResponse response) throws IOException {
-        List<MemberRenderDTO> listMember = memberService.listMemberSearch(searchForm, 1);
-        String fileName = "List member " + ".xlsx";
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=\"" + fileName + "\"";
-
-
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader(headerKey, headerValue);
-        //ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        ExcelGenerator generator = new ExcelGenerator(listMember);
-        generator.generateExcelFile(response);
-
-
-    }
 
     @PutMapping("/delete/{id}")
-    public ResponseEntity<Object> deleteMember(@PathVariable(name = "id") int id){
+    public ResponseEntity<Object> deleteMember(@PathVariable(name = "id") int id) {
         int deleteMember = memberService.deleteMember(id);
         return new ResponseEntity<>(deleteMember, HttpStatus.OK);
     }
 
     @PutMapping("/comeBack/{id}")
-    public ResponseEntity<Member> memComeBack(@PathVariable(name = "id") int memberNo){
+    public ResponseEntity<Member> memComeBack(@PathVariable(name = "id") int memberNo) {
         Member memberComeBack = memberService.comeBack(memberNo);
         return new ResponseEntity<>(memberComeBack, HttpStatus.OK);
     }
-
 
 
 }

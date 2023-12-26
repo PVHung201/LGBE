@@ -1,4 +1,4 @@
-package com.example.memberManagement.model.dto;
+package com.example.memberManagement.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
