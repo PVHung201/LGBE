@@ -28,9 +28,9 @@ public class ExcelGeneratorUtil {
         style.setFont(font);
         createCell(row, 0, "Membership Number", style);
         createCell(row, 1, "ID", style);
-        createCell(row, 2, "name", style);
+        createCell(row, 2, "Name", style);
         createCell(row, 3, "Mobile phone number", style);
-        createCell(row, 4, "email", style);
+        createCell(row, 4, "Email", style);
         createCell(row, 5, "Join date", style);
 
     }
@@ -61,7 +61,7 @@ public class ExcelGeneratorUtil {
         for (MemberRenderDTO record : listMember) {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
-            createCell(row, columnCount++, record.getMemberNo(), style);
+            createCell(row, columnCount++, String.valueOf(record.getMemberNo()), style);
             createCell(row, columnCount++, record.getId(), style);
             createCell(row, columnCount++, record.getName(), style);
             createCell(row, columnCount++, record.getMobilePhone(), style);
