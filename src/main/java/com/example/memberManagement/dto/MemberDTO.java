@@ -9,7 +9,7 @@ public class MemberDTO {
     private String password;
     private String name;
 
-    private int mobilePhone;
+    private String mobilePhone;
 
     private String email;
 
@@ -47,11 +47,11 @@ public class MemberDTO {
         this.name = name;
     }
 
-    public int getMobilePhone() {
+    public String getMobilePhone() {
         return mobilePhone;
     }
 
-    public void setMobilePhone(int mobilePhone) {
+    public void setMobilePhone(String mobilePhone) {
         this.mobilePhone = mobilePhone;
     }
 

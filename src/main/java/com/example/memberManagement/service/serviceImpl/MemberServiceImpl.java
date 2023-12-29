@@ -54,7 +54,7 @@ public class MemberServiceImpl extends BaseRepository implements MemberService {
         member.setId(memberDTO.getId());
         member.setPassword(passwordEncoder.encode(memberDTO.getPassword()));
         member.setName(memberDTO.getName());
-        member.setMobilePhone(String.valueOf(memberDTO.getMobilePhone()));
+        member.setMobilePhone(memberDTO.getMobilePhone());
         member.setEmail(memberDTO.getEmail());
         member.setStatus(0);
         member.setRoleId(memberDTO.getRoleId());
